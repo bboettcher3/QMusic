@@ -55,7 +55,18 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    //==============================================================================
+    void setDelayTime(float newTime);
+    void setDryWet(int newDryWet);
+
 private:
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (QdelayAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(QdelayAudioProcessor)
+
+    AudioSampleBuffer m_delayBuf;
+    float m_readPos;
+    float m_writePos;
+    float m_delayTime;
+    int   m_delayBufferLength;
+    float m_dryWet;
 };

@@ -3,6 +3,12 @@
 <JUCERPROJECT id="gDXbet" name="QDelay" projectType="audioplug" jucerVersion="5.3.2">
   <MAINGROUP id="RtBcZH" name="QDelay">
     <GROUP id="{D9E926E8-C375-F97F-3AF4-6ED75632C6D3}" name="Source">
+      <GROUP id="{2E698E5A-A86A-305A-E476-E0490641FB99}" name="Components">
+        <FILE id="zonQbB" name="MainWindowComponent.cpp" compile="1" resource="0"
+              file="Source/MainWindowComponent.cpp"/>
+        <FILE id="Xjt3pK" name="MainWindowComponent.h" compile="0" resource="0"
+              file="Source/MainWindowComponent.h"/>
+      </GROUP>
       <FILE id="lpcTYp" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="tJUsY6" name="PluginProcessor.h" compile="0" resource="0"

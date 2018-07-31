@@ -2,6 +2,9 @@
 
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="QDelay\Source\Components">
+      <UniqueIdentifier>{4CAD5B9C-B038-1777-37D6-B8D16140BF99}</UniqueIdentifier>
+    </Filter>
     <Filter Include="QDelay\Source">
       <UniqueIdentifier>{646CA276-990A-D005-FF9E-77F9CFCBCE28}</UniqueIdentifier>
     </Filter>
@@ -391,6 +394,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\MainWindowComponent.cpp">
+      <Filter>QDelay\Source\Components</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\PluginProcessor.cpp">
       <Filter>QDelay\Source</Filter>
     </ClCompile>
@@ -2289,6 +2295,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\MainWindowComponent.h">
+      <Filter>QDelay\Source\Components</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\PluginProcessor.h">
       <Filter>QDelay\Source</Filter>
     </ClInclude>

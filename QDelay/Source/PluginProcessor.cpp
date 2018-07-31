@@ -24,6 +24,11 @@ QdelayAudioProcessor::QdelayAudioProcessor()
                        )
 #endif
 {
+    m_readPos = 0;
+    m_writePos = 0;
+    m_delayTime = 0;
+    m_dryWet = 0;
+    m_delayBufferLength = 1;
 }
 
 QdelayAudioProcessor::~QdelayAudioProcessor()
@@ -97,6 +102,15 @@ void QdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    m_delayBufferLength = (int) 2.0 * sampleRate;
+    if (m_delayBufferLength < 1)
+    {
+        m_delayBufferLength = 1;
+    }
+    m_delayBuf.setSize(2, m_delayBufferLength);
+    m_delayBuf.clear();
+ 
+    m_readPos = (int)(m_writePos - (m_delayTime * getSampleRate()) + m_delayBufferLength) % m_delayBufferLength;
 }
 
 void QdelayAudioProcessor::releaseResources()
@@ -135,6 +149,9 @@ void QdelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer&
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
+    int rPos, wPos;
+    float out;
+
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).
@@ -153,9 +170,29 @@ void QdelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer&
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         auto* channelData = buffer.getWritePointer (channel);
+        float* delayData = m_delayBuf.getWritePointer(jmin(channel, m_delayBuf.getNumChannels() - 1));
 
         // ..do something to the data...
+        rPos = m_readPos;
+        wPos = m_writePos;
+        for (int i = 0; i < buffer.getNumSamples(); i++)
+        {
+            out = ((1 - m_dryWet) * channelData[i]) + (m_dryWet * delayData[rPos]);
+            delayData[wPos] = channelData[i];
+
+            if (++rPos >= m_delayBufferLength)
+            {
+                rPos = 0;
+            }
+            if (++wPos >= m_delayBufferLength)
+            {
+                wPos = 0;
+            }
+            channelData[i] = out;
+        }
     }
+    m_readPos = rPos;
+    m_writePos = wPos;
 }
 
 //==============================================================================
@@ -181,6 +218,17 @@ void QdelayAudioProcessor::setStateInformation (const void* data, int sizeInByte
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+}
+
+void QdelayAudioProcessor::setDelayTime(float newTime)
+{
+    m_delayTime = newTime;
+    m_readPos = (int)(m_writePos - (m_delayTime * getSampleRate()) + m_delayBufferLength) % m_delayBufferLength;
+}
+
+void QdelayAudioProcessor::setDryWet(int newDryWet)
+{
+    m_dryWet = (float)newDryWet / (float)100;
 }
 
 //==============================================================================
