@@ -58,6 +58,7 @@ public:
     //==============================================================================
     void setDelayTime(float newTime);
     void setDryWet(int newDryWet);
+    void setFeedback(int newFeedback);
 
 private:
     //==============================================================================
@@ -66,7 +67,8 @@ private:
     AudioSampleBuffer m_delayBuf;
     float m_readPos;
     float m_writePos;
-    float m_delayTime;
     int   m_delayBufferLength;
-    float m_dryWet;
+    AudioParameterFloat* m_delayTime;
+    AudioParameterFloat*   m_feedback;
+    AudioParameterFloat* m_dryWet;
 };

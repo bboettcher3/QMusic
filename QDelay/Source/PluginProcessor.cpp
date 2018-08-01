@@ -26,8 +26,24 @@ QdelayAudioProcessor::QdelayAudioProcessor()
 {
     m_readPos = 0;
     m_writePos = 0;
-    m_delayTime = 0;
-    m_dryWet = 0;
+    addParameter(m_delayTime = new AudioParameterFloat(
+        "time",
+        "Time",
+        0.0f,
+        10.0f,
+        1.0f));
+    addParameter(m_dryWet = new AudioParameterFloat(
+        "dryWet",
+        "DryWet",
+        0.0f,
+        1.0f,
+        0.25f));
+    addParameter(m_feedback= new AudioParameterFloat(
+        "feedback",
+        "Feedback",
+        0.0f,
+        1.0f,
+        0.25f));
     m_delayBufferLength = 1;
 }
 
@@ -110,7 +126,7 @@ void QdelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
     m_delayBuf.setSize(2, m_delayBufferLength);
     m_delayBuf.clear();
  
-    m_readPos = (int)(m_writePos - (m_delayTime * getSampleRate()) + m_delayBufferLength) % m_delayBufferLength;
+    m_readPos = (int)(m_writePos - (*m_delayTime * getSampleRate()) + m_delayBufferLength) % m_delayBufferLength;
 }
 
 void QdelayAudioProcessor::releaseResources()
@@ -177,8 +193,8 @@ void QdelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer&
         wPos = m_writePos;
         for (int i = 0; i < buffer.getNumSamples(); i++)
         {
-            out = ((1 - m_dryWet) * channelData[i]) + (m_dryWet * delayData[rPos]);
-            delayData[wPos] = channelData[i];
+            out = ((1 - *m_dryWet) * channelData[i]) + (*m_dryWet * delayData[rPos]);
+            delayData[wPos] = channelData[i] + (*m_feedback * delayData[rPos]);
 
             if (++rPos >= m_delayBufferLength)
             {
@@ -222,13 +238,18 @@ void QdelayAudioProcessor::setStateInformation (const void* data, int sizeInByte
 
 void QdelayAudioProcessor::setDelayTime(float newTime)
 {
-    m_delayTime = newTime;
-    m_readPos = (int)(m_writePos - (m_delayTime * getSampleRate()) + m_delayBufferLength) % m_delayBufferLength;
+    *m_delayTime = newTime;
+    m_readPos = (int)(m_writePos - (*m_delayTime * getSampleRate()) + m_delayBufferLength) % m_delayBufferLength;
 }
 
 void QdelayAudioProcessor::setDryWet(int newDryWet)
 {
-    m_dryWet = (float)newDryWet / (float)100;
+    *m_dryWet = (float)newDryWet / (float)100;
+}
+
+void QdelayAudioProcessor::setFeedback(int newFeedback)
+{
+    *m_feedback = (float)newFeedback / (float)100;
 }
 
 //==============================================================================

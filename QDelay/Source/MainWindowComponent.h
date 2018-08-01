@@ -63,6 +63,8 @@ private:
     std::unique_ptr<Slider> m_sliderDryWet;
     std::unique_ptr<Label> m_timeLabel;
     std::unique_ptr<Label> m_dryWetLabel;
+    std::unique_ptr<Slider> m_sliderFeedback;
+    std::unique_ptr<Label> m_feedbackLabel;
 
 
     //==============================================================================

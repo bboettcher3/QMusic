@@ -17,7 +17,7 @@ QdelayAudioProcessorEditor::QdelayAudioProcessorEditor (QdelayAudioProcessor& p)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (200, 200);
+    setSize (300, 200);
     addAndMakeVisible(mainWindowComponent);
     mainWindowComponent.setProcessor(&processor);
 }
